@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeZero - Misinformation Detector</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="popup-container">
+        <header class="popup-header">
+            <h1 class="logo">FakeZero</h1>
+            <div class="status-indicator" id="statusIndicator"></div>
+        </header>
+
+        <main class="popup-content">
+        <!-- Counter Card with Centered Value & Reset Button at Bottom Right -->
+        <div class="counter-card">
+            <p class="counter-label">Detected Fake News</p>
+            <div class="counter-value" id="fakeNewsCounter">0</div>
+            <div class="reset-container">
+                <button id="resetCounterBtn" class="reset-button">
+                    <svg class="reset-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V3m-7 7H3m4.93-4.93L5.64 3.64M19 12h2m-4.93-4.93l1.29-1.29M17.07 17.07l1.29 1.29M12 19v2m-7-7H3m4.93 4.93l-1.29 1.29" 
+                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Reset
+                </button>
+            </div>
+        </div>
+
+        
+            <!-- Modern Toggle Switch -->
+            <div class="toggle-wrapper">
+                <p class="toggle-label">Detection Mode</p>
+                <input type="checkbox" id="toggleSwitch" class="toggle-checkbox">
+                <label for="toggleSwitch" class="toggle-label-switch">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        
+            <aside class="info-box">
+                <p>AI-powered detection system analyzing social media for misinformation.</p>
+            </aside>
+        </main>
+        
+
+        <footer class="popup-footer">
+            <small>Developed by UM6P</small>
+        </footer>
+    </div>
+
+    <script src="popup.js" type="module"></script>
+</body>
+</html>
+

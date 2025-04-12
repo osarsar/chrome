@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeZero - Post Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="post-analysis.css">
+</head>
+
+<body>
+    <div class="post-analysis-container">
+        <header class="analysis-header">
+            <h1 class="logo">FakeZero</h1>
+            <div class="credibility-badge checking-animation" id="credibility-status">Checking...</div>
+        </header>
+
+        <section class="analysis-section">
+            <h2 class="section-title">Post Content</h2>
+            <div class="loading-border"></div>
+            <div class="info-card">
+                <p id="post-content" class="loading">Loading...</p>
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2 class="section-title">Sentiment Analysis</h2>
+            <div class="loading-border"></div>
+            <div class="info-card">
+                <p id="sentiment-score" class="loading">Loading...</p>
+                <div class="loading-bar"></div>
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2 class="section-title">Sources</h2>
+            <div class="loading-border"></div>
+            <div class="info-card">
+                <ul id="sources-check" class="loading">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="post-analysis.js"></script>
+</body>
+
+</html>

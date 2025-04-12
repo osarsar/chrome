@@ -1,0 +1,88 @@
+{
+    "manifest_version": 3,
+    "name": "Fake News Detector",
+    "version": "1.1",
+    "description": "Detects and flags fake news on social media.",
+    
+    "web_accessible_resources": [
+            {
+                "resources": [
+                    "post-analysis/post-analysis.html",
+                    "post-analysis/post-analysis.css",
+                    "post-analysis/post-analysis.js",
+                    "icon.png"
+                ],
+                "matches": [
+                    "https://*.facebook.com/*",
+                    "https://*.instagram.com/*",
+                    "https://*.twitter.com/*"
+                ]
+            }
+    ],
+    
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting",
+        "messaging",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://*.facebook.com/*",
+        "https://*.instagram.com/*",
+        "https://*.twitter.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.facebook.com/*",
+                "https://*.instagram.com/*",
+                "https://*.twitter.com/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": "icon.png"
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
