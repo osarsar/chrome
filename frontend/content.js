@@ -210,29 +210,47 @@ class FakeNewsDetector {
 
 
 
-    extractFullTextFromPost(postElement) {
-        let extractedText = new Set(); 
-        let textElements;
-        if (this.platformConfig.isTwitter) {
-
-            textElements = postElement.querySelectorAll(this.platformConfig.selectors.content);
-        } else {
-            
-            textElements = postElement.querySelectorAll('*');
+    async extractFullTextFromPost(postElement) {
+        // 🔁 Rechercher tous les éléments cliquables potentiels
+        const seeMoreBtn = Array.from(postElement.querySelectorAll('div[role="button"], span[role="button"]'))
+            .find(el => /(voir plus|see more)/i.test(el.textContent.trim()));
+    
+        if (seeMoreBtn) {
+            console.log("🟢 Click sur : ", seeMoreBtn.textContent);
+            seeMoreBtn.click();
+            await new Promise(resolve => setTimeout(resolve, 300)); // ⏳ attendre que le texte se charge
         }
-
+    
+        // 🔍 Extraire tout le texte visible
+        const extractedText = new Set();
+        const textElements = postElement.querySelectorAll('*');
+    
         textElements.forEach(element => {
-        
-            if (element.tagName.toLowerCase() !== 'img' && element.getAttribute('role') !== 'button') {
-                const textContent = element.textContent.trim();
-                if (textContent && !extractedText.has(textContent)) {
-                    extractedText.add(textContent); 
-                }
+            if (
+                element.tagName.toLowerCase() !== 'img' &&
+                element.getAttribute('role') !== 'button'
+            ) {
+                const content = element.textContent?.trim();
+                if (content) extractedText.add(content);
             }
         });
-
-        return Array.from(extractedText).join("\n");
+    
+        const result = Array.from(extractedText).join('\n');
+        console.log("[📝 Texte extrait complet]", result);
+        return result;
     }
+    
+    
+    
+    
+    async extractPostDetails(postElement) {
+        const text = await this.extractFullTextFromPost(postElement);
+        const links = this.extractLinksFromPost(postElement);
+        const images = this.extractFacebookImages(postElement);
+    
+        return { text, links, images };
+    }
+    
     extractLinksFromPost(postElement) {
         let links = [];
         const linkElements = postElement.querySelectorAll('a[href]');
@@ -277,28 +295,26 @@ class FakeNewsDetector {
 
     async processPost(post, force = false) {
         if (!this.extensionEnabled) return;
-    
-        // ✅ Skip if already processed
         if (this.processedPosts.has(post)) return;
-    
-        let content = this.extractFullTextFromPost(post);
     
         const analyzing = document.createElement("div");
         analyzing.innerText = "⏳ Analyzing post...";
         post.appendChild(analyzing);
     
-        // 🛑 If it's not a news post
-        if (!this.isValidNewsContent(content)) {
+        const { text, links, images } = await this.extractPostDetails(post);
+    
+        // Optional: log for debugging
+        console.log('[FakeZero] Text:', text);
+        console.log('[FakeZero] Links:', links);
+        console.log('[FakeZero] Images:', images);
+    
+        if (!this.isValidNewsContent(text)) {
             analyzing.remove();
             this.showNonNewsNotice(post);
-    
-            // ✅ VERY IMPORTANT:
-            // even "non-news" posts should be marked as processed
             this.processedPosts.add(post);
             return;
         }
     
-        // ✅ Now it's valid news — add to processed list
         this.processedPosts.add(post);
     
         try {
@@ -306,8 +322,10 @@ class FakeNewsDetector {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    title: content.slice(0, 100),
-                    text: content
+                    title: text.slice(0, 100),
+                    text: text,
+                    links: links,
+                    images: images
                 })
             });
     
@@ -315,26 +333,22 @@ class FakeNewsDetector {
             analyzing.remove();
     
             const label = result.prediction;
-    
             if (label.includes("FAKE")) {
                 this.addWarningIcon(post, label);
-            
-                // ✅ Increment fake news counter
                 chrome.storage.local.get(['fakeNewsCount'], (result) => {
                     const currentCount = result.fakeNewsCount || 0;
                     chrome.storage.local.set({ fakeNewsCount: currentCount + 1 });
                 });
-            
             } else {
                 this.addSafeIcon(post, label);
             }
-            
     
         } catch (err) {
             analyzing.remove();
             console.error("🔥 Prediction failed:", err);
         }
     }
+    
     
     
     
